@@ -1,0 +1,6 @@
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/Oddyssey.exe
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/Oddyssey.pdb
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.csprojResolveAssemblyReference.cache
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.csproj.CoreCompileInputs.cache
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.exe
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.pdb
