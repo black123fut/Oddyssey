@@ -20,6 +20,27 @@ namespace Oddyssey
 
             NetworkStream stream = client.GetStream();
             stream.Write(buf, 0, xml.Length);
+               
+
+
+            XmlDocument docxml = new XmlDocument();
+            XmlNode rootNode = docxml.CreateElement("users");
+            docxml.AppendChild(rootNode);
+
+            XmlNode userNode = docxml.CreateElement("user");
+            XmlAttribute attributeUserName = docxml.CreateAttribute("username");
+            XmlAttribute attributeAge = docxml.CreateAttribute("Age");
+            attributeUserName.Value = "black123fut";
+            attributeAge.Value = "19";
+            userNode.Attributes.Append(attributeUserName);
+            userNode.Attributes.Append(attributeAge);
+
+            userNode.InnerText = "Isaac";
+            rootNode.AppendChild(userNode);
+            docxml.Save("test-doc.xml");
+            
+            
+            
         }
 
         public static String Register()
