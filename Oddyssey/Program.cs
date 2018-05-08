@@ -1,7 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace Oddyssey
 {
@@ -11,61 +15,61 @@ namespace Oddyssey
     {
         public static void Main(string[] args)
         {
+            //casa: 192.168.100.6
             TcpClient client = new TcpClient("192.168.100.6", 8000);
 
-            String xml = Register();
+            //Convierte a String el Xml
+            String xml = Serialize(WriteXml()).Replace("\n", String.Empty);
 
             byte[] buf;
             buf = Encoding.UTF8.GetBytes(xml);
-
+            
             NetworkStream stream = client.GetStream();
-            stream.Write(buf, 0, xml.Length);
-               
+            stream.Write(buf, 0, buf.Length);
 
+//            byte[] bytes = new byte[256];
+//            Int32 response = stream.Read(bytes, 0, bytes.Length);          
 
-            XmlDocument docxml = new XmlDocument();
-            XmlNode rootNode = docxml.CreateElement("users");
-            docxml.AppendChild(rootNode);
-
-            XmlNode userNode = docxml.CreateElement("user");
-            XmlAttribute attributeUserName = docxml.CreateAttribute("username");
-            XmlAttribute attributeAge = docxml.CreateAttribute("Age");
-            attributeUserName.Value = "black123fut";
-            attributeAge.Value = "19";
-            userNode.Attributes.Append(attributeUserName);
-            userNode.Attributes.Append(attributeAge);
-
-            userNode.InnerText = "Isaac";
-            rootNode.AppendChild(userNode);
-            docxml.Save("test-doc.xml");
-            
-            
-            
         }
 
-        public static String Register()
+        public static string Serialize(XmlDocument xml)
         {
-            Console.Write("Username: ");
-            String username = Console.ReadLine();
-            
-            Console.Write("Name: ");
-            String name2 = Console.ReadLine();
-            String name = Console.ReadLine();
+            XmlSerializer xmlSerializer = new XmlSerializer(xml.GetType());
 
-            Console.Write("Surname: ");
-            String surname2 = Console.ReadLine();
-            String surname = Console.ReadLine();
+            using (StringWriter text = new StringWriter())
+            {
+                xmlSerializer.Serialize(text, xml);
+                return text.ToString();
+            }
 
-            Console.Write("Age: ");
-            String surname3 = Console.ReadLine();
-            String age = Console.ReadLine();
+        }
+
+        public static XmlDocument WriteXml()
+        {
+            XmlDocument xml = new XmlDocument();
+            XmlNode rootNode = xml.CreateElement("Message");
+            xml.AppendChild(rootNode);
+
+            XmlNode opcode = xml.CreateElement("opcode");
+            opcode.InnerText = "Registrar";
+            rootNode.AppendChild(opcode);
+
+            XmlNode data = xml.CreateElement("Data");
+            XmlNode username = xml.CreateElement("username");
+            username.InnerText = "Hojo";
+            XmlNode name = xml.CreateElement("name");
+            name.InnerText = "Isaac";
+            XmlNode surname = xml.CreateElement("surname");
+            surname.InnerText = "Benavides";
+            XmlNode age = xml.CreateElement("age");
+            age.InnerText = "19";
             
-            String xml = "<message><command>" + "registrar" + "</command>" +
-                         "<data><username>" + username + "</username>" + 
-                         "<name>" + name + "</name>" + 
-                         "<surname>" + surname + "</surname>" + 
-                         "<age>" + age + "</age></data>" + 
-                         "</message>";
+            data.AppendChild(username);
+            data.AppendChild(name);
+            data.AppendChild(surname);
+            data.AppendChild(age);
+
+            rootNode.AppendChild(data);
             return xml;
         }
     }
