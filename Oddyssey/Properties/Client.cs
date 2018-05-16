@@ -55,11 +55,11 @@ namespace Oddyssey.Properties
                 String opcode = message.SelectSingleNode("Message/opcode").InnerText;
                 String bytes = message.SelectSingleNode("Message/Data/bytes").InnerText;
 
-                byte[] go = Encoding.UTF8.GetBytes(bytes);
+                byte[] toStream = Convert.FromBase64String(bytes);
 
                 byte[] copy = File.ReadAllBytes("torero.mp3");
-         
-                using (var mp3Stream = new MemoryStream(copy))
+                         
+                using (var mp3Stream = new MemoryStream(toStream))
                 {
                     using (var mp3FileReader = new Mp3FileReader(mp3Stream))
                     {

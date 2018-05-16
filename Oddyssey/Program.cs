@@ -12,10 +12,7 @@ namespace Oddyssey
         {
             Client jo = new Client();
             jo.SignInMessage("Hojo", "isaac", "benavides", 19);
-//            int port = 8000;
-//            Client client = new Client(port);
-//            client.Run();
-//            
+
         }
     }
 }
