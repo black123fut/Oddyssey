@@ -1,0 +1,9 @@
+<Message>
+  <opcode>Registrar</opcode>
+  <Data>
+    <username>Hojo</username>
+    <name>Isaac</name>
+    <surname>Benavides</surname>
+    <age>19</age>
+  </Data>
+</Message>

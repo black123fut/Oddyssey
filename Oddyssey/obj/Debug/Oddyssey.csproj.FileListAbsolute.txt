@@ -4,3 +4,5 @@
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.csproj.CoreCompileInputs.cache
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.exe
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.pdb
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/NAudio.dll
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/NAudio.xml
