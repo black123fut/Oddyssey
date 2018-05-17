@@ -53,27 +53,15 @@ namespace Oddyssey.Properties
                 message.LoadXml(data);
                 
                 String opcode = message.SelectSingleNode("Message/opcode").InnerText;
-                String bytes = message.SelectSingleNode("Message/Data/bytes").InnerText;
 
-                byte[] toStream = Convert.FromBase64String(bytes);
-
-                byte[] copy = File.ReadAllBytes("torero.mp3");
-                         
-                using (var mp3Stream = new MemoryStream(toStream))
+                if (opcode.Equals("004"))
                 {
-                    using (var mp3FileReader = new Mp3FileReader(mp3Stream))
-                    {
-                        using (var wave32 = new WaveChannel32(mp3FileReader, 0.1f, 1f))
-                        {
-                            using (var ds = new DirectSoundOut())
-                            {
-                                ds.Init(wave32);
-                                ds.Play();
-                                Thread.Sleep(30000);
-                            }
-                        }
-                    }
+                    String bytes = message.SelectSingleNode("Message/Data/bytes").InnerText;
+    
+                    byte[] toStream = Convert.FromBase64String(bytes);
+                    PlaySong(toStream);
                 }
+                    
                 
 //                IWaveProvider provider = new RawSourceWaveStream(
 //                    new MemoryStream(copy), new WaveFormat());
@@ -90,6 +78,30 @@ namespace Oddyssey.Properties
             }
         }
 
+        public void PlaySong(byte[] mp3Array)
+        {
+            byte[] copy = File.ReadAllBytes("torero.mp3");
+            TagLib.File file = TagLib.File.Create("torero.mp3");
+            Console.WriteLine(file.Tag.Title);
+            Console.WriteLine(file.Tag.Album);
+            
+            using (var mp3Stream = new MemoryStream(mp3Array))
+            {
+                using (var mp3FileReader = new Mp3FileReader(mp3Stream))
+                {
+                    using (var wave32 = new WaveChannel32(mp3FileReader, 0.1f, 1f))
+                    {
+                        using (var ds = new DirectSoundOut())
+                        {
+                            ds.Init(wave32);
+                            ds.Play();
+                            Thread.Sleep(30000 * 5);
+                        }
+                    }
+                }
+            }
+        }
+
         public string Serialize(XmlDocument xml)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(xml.GetType());
@@ -102,7 +114,45 @@ namespace Oddyssey.Properties
 
         }
 
-        public XmlDocument SignInMessage(String username, String name, String surname, int age)
+        public void SendSongMessage(String path)
+        {
+            TagLib.File file = TagLib.File.Create(path);
+            byte[] copy = File.ReadAllBytes(path);
+            
+            XmlDocument xml = new XmlDocument();
+            XmlNode rootNode = xml.CreateElement("Message");
+            xml.AppendChild(rootNode);
+
+            XmlNode opcode = xml.CreateElement("opcode");
+            opcode.InnerText = "005";
+            rootNode.AppendChild(opcode);
+
+            XmlNode data = xml.CreateElement("Data");
+            XmlNode song = xml.CreateElement("cancion");
+            song.InnerText = file.Tag.Title;
+            XmlNode artist = xml.CreateElement("artista");
+            artist.InnerText = file.Tag.FirstPerformer;
+            XmlNode album = xml.CreateElement("album");
+            album.InnerText = file.Tag.Album;
+            XmlNode gnere = xml.CreateElement("genero");
+            gnere.InnerText = file.Tag.FirstGenre;
+            XmlNode lyrics = xml.CreateElement("letra");
+            lyrics.InnerText = file.Tag.Lyrics;
+            XmlNode bytes = xml.CreateElement("bytes");
+            bytes.InnerText = Convert.ToBase64String(copy);
+
+            data.AppendChild(song);
+            data.AppendChild(artist);
+            data.AppendChild(album);
+            data.AppendChild(gnere);
+            data.AppendChild(lyrics);
+            data.AppendChild(bytes);
+
+            rootNode.AppendChild(data);
+            Send(xml);
+        }
+
+        public void PlaySongMessage(String cancion, String artista)
         {
             XmlDocument xml = new XmlDocument();
             XmlNode rootNode = xml.CreateElement("Message");
@@ -110,6 +160,28 @@ namespace Oddyssey.Properties
 
             XmlNode opcode = xml.CreateElement("opcode");
             opcode.InnerText = "004";
+            rootNode.AppendChild(opcode);
+
+            XmlNode data = xml.CreateElement("Data");
+            XmlNode song = xml.CreateElement("cancion");
+            song.InnerText = cancion;
+            XmlNode artist = xml.CreateElement("artista");
+            artist.InnerText = artista;
+            data.AppendChild(song);
+            data.AppendChild(artist);
+
+            rootNode.AppendChild(data);
+            Send(xml);
+        }
+        
+        public void SignInMessage(String username, String name, String surname, int age)
+        {
+            XmlDocument xml = new XmlDocument();
+            XmlNode rootNode = xml.CreateElement("Message");
+            xml.AppendChild(rootNode);
+
+            XmlNode opcode = xml.CreateElement("opcode");
+            opcode.InnerText = "000";
             rootNode.AppendChild(opcode);
 
             XmlNode data = xml.CreateElement("Data");
@@ -128,37 +200,12 @@ namespace Oddyssey.Properties
             data.AppendChild(age1);
 
             rootNode.AppendChild(data);
-            Send(xml);
-            
-            return xml;
+            Send(xml);            
         }
 
         public XmlDocument GetMessage()
         {
             return message;
-        }
-    }
-    
-    public class MediaPlayer
-    {
-        System.Media.SoundPlayer soundPlayer;
-
-        public MediaPlayer(byte[] buffer)
-        {
-            var memoryStream = new MemoryStream(buffer, true);
-            soundPlayer = new System.Media.SoundPlayer(memoryStream);
-        }
-
-        public void Play()
-        {
-            soundPlayer.Play();
-        }
-
-        public void Play(byte[] buffer)
-        {
-            soundPlayer.Stream.Seek(0, SeekOrigin.Begin);
-            soundPlayer.Stream.Write(buffer, 0, buffer.Length);
-            soundPlayer.Play();
         }
     }
 }

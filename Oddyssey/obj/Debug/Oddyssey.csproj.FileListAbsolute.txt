@@ -6,3 +6,5 @@
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/obj/Debug/Oddyssey.pdb
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/NAudio.dll
 /Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/NAudio.xml
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/policy.2.0.taglib-sharp.dll
+/Users/isaacbenavides/RiderProjects/Oddyssey/Oddyssey/bin/Debug/taglib-sharp.dll
